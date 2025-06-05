@@ -11,5 +11,5 @@ WORKDIR /app/backend
 # Install backend dependencies
 RUN npm install
 
-# Start server
+# Start the backend server
 CMD ["node", "index.js"]
