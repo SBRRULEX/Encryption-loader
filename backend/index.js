@@ -1,40 +1,20 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const startBot = require('./bot');
-const cors = require('cors');
-
 const app = express();
+const path = require('path');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public'))); // serve HTML UI
 
-let isRunning = false;
-let stopCode = "";
-
-app.post('/start', async (req, res) => {
-  const { token, messageList, delay, uid } = req.body;
-  if(isRunning) {
-    return res.status(400).json({error: 'Bot already running'});
-  }
-  stopCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-  isRunning = true;
-
-  startBot({ token, messageList, delay, uid, stopCode, isRunning }).then(() => {
-    isRunning = false;
-  }).catch(() => {
-    isRunning = false;
-  });
-
-  res.json({ status: 'running', stopCode });
+app.post('/send', async (req, res) => {
+  const { token, uid, message } = req.body;
+  console.log(`[${new Date().toLocaleString()}] Sending message:`, message);
+  // Yaha Puppeteer se message bhejne ka logic aayega
+  return res.json({ status: 'SBR SUCCESSFULLY SEND' });
 });
 
-app.post('/stop', (req, res) => {
-  const { code } = req.body;
-  if(code === stopCode) {
-    isRunning = false;
-    res.json({ status: 'stopped' });
-  } else {
-    res.status(403).json({ error: 'Invalid stop code' });
-  }
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000');
 });
-
-app.listen(process.env.PORT || 3000, () => console.log('Server running...'));
