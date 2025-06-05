@@ -1,19 +1,15 @@
-# Build frontend
-FROM node:18 as frontend
-WORKDIR /app
-COPY frontend ./frontend
-WORKDIR /app/frontend
-RUN npm install && npm run build
-
-# Build backend
+# Use Node base image
 FROM node:18
+
+# Set working directory
 WORKDIR /app
+
+# Copy backend files
 COPY backend ./backend
 WORKDIR /app/backend
-RUN npm install
 
-# Copy built frontend to backend (if serving it from Express)
-COPY --from=frontend /app/frontend/build ./public
+# Install backend dependencies
+RUN npm install
 
 # Start server
 CMD ["node", "index.js"]
