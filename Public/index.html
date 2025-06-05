@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FB Bot UI</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #121212; color: white; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; }
+    button { padding: 10px 20px; background: #00ff99; border: none; color: black; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Facebook Bot Controller</h2>
+  <input id="token" placeholder="Paste Token">
+  <input id="uid" placeholder="User or Group UID">
+  <textarea id="msg" rows="5" placeholder="Type your message here..."></textarea>
+  <button onclick="send()">Send</button>
+  <p id="status"></p>
+
+  <script>
+    async function send() {
+      const res = await fetch('/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: document.getElementById('token').value,
+          uid: document.getElementById('uid').value,
+          message: document.getElementById('msg').value
+        })
+      });
+      const data = await res.json();
+      document.getElementById('status').innerText = data.status;
+    }
+  </script>
+</body>
+</html>
